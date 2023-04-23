@@ -14,8 +14,9 @@ async function httpGetLaunches() {
 }
 
 async function httpSubmitLaunch(launch) {
-  // TODO: Once API is ready.
-  // Submit given launch data to launch system.
+  await fetch(`${API_URL}/launches`, {
+    method: 'post',
+  })
 }
 
 async function httpAbortLaunch(id) {
