@@ -17,6 +17,14 @@ describe('Test POST /launches', () => {
         target: "Kepler-186 f",
         launchDate: "August 17, 2045"
     };
+
+    const launchDataWithUnknownPlanet = {
+        mission: "IDN145",
+        rocket: "Kerisbuana IDN1",
+        target: "Ke",
+        launchDate: "August 17, 2045"
+    };
+
     const launchDataWithInvalidDate = {
         mission: "IDN145",
         rocket: "Kerisbuana IDN1",
@@ -67,4 +75,16 @@ describe('Test POST /launches', () => {
             error: 'Invalid launch date',
         });
     });
+
+    test('It should catch no matching planet found', async () => {
+        const response = await request(app)
+            .post('/launches')
+            .send(launchDataWithUnknownPlanet)
+            .expect('Content-Type', /json/)
+            .expect(400);
+
+        expect(response.body).toStrictEqual({
+            error: 'No matching planet found',
+        });
+    })
 });
