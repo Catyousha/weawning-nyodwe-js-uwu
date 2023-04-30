@@ -1,7 +1,14 @@
 const { getAllLaunches, scheduleNewLaunch, existLaunchWithId, abortLaunchById, } = require('../../models/launches.model');
 
 async function httpGetAllLaunches(req, res) {
-    return res.status(200).json(await getAllLaunches());
+    try {
+        const result = await getAllLaunches();
+        return res.status(200).json(result);
+    } catch (error) {
+        return res.status(500).json({
+            error: error.message,
+        });
+    }
 }
 
 async function httpAddNewLaunch(req, res) {
