@@ -1,9 +1,19 @@
-const { getAllLaunches, scheduleNewLaunch, existLaunchWithId, abortLaunchById, } = require('../../models/launches.model');
+const {
+    getAllLaunches,
+    scheduleNewLaunch,
+    existLaunchWithId,
+    abortLaunchById,
+} = require('../../models/launches.model');
+
+const {
+    getPagination,
+} = require('../../services/query');
 
 async function httpGetAllLaunches(req, res) {
     try {
-        const result = await getAllLaunches();
-        return res.status(200).json(result);
+        const {skip, limit} = getPagination(req.query);
+        const launches = await getAllLaunches(skip, limit);
+        return res.status(200).json(launches);
     } catch (error) {
         return res.status(500).json({
             error: error.message,
@@ -27,7 +37,7 @@ async function httpAddNewLaunch(req, res) {
             error: 'Invalid launch date',
         });
     }
-    try {        
+    try {
         await scheduleNewLaunch(launch);
         return res.status(201).json(launch);
     } catch (error) {
@@ -47,7 +57,7 @@ async function httpAbortLaunch(req, res) {
     }
 
     const aborted = abortLaunchById(launchId);
-    if(!aborted) {
+    if (!aborted) {
         return res.status(400).json({
             error: 'Something wrong, launch not aborted',
         });
